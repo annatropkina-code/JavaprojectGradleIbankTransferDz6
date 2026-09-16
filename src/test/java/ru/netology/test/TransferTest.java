@@ -1,6 +1,5 @@
 package ru.netology.test;
 
-import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,6 @@ import ru.netology.data.DataHelper;
 import ru.netology.page.DashboardPage;
 import ru.netology.page.LoginPage;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,14 +50,11 @@ public class TransferTest {
     void shouldGetErrorIfTransferMoreThanBalance() {
         var firstCard = DataHelper.getFirstCard();
         var secondCard = DataHelper.getSecondCard();
-        int amount = 100_000; // больше, чем 10 000
+        int amount = 100_000;
 
         var transferPage = dashboardPage.selectCardToReplenish(secondCard.getNumber());
-        transferPage.makeTransferWithError(String.valueOf(amount), firstCard.getNumber());
-
-        $("[data-test-id='error-notification']")
-                .shouldBe(Condition.visible)
-                .shouldHave(Condition.text("Ошибка!"));
+        transferPage.makeTransferWithError(String.valueOf(amount), firstCard.getNumber())
+                .verifyErrorMessage("Ошибка!");
     }
 
 

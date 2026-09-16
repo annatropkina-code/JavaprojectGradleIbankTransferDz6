@@ -1,6 +1,5 @@
 package ru.netology.page;
 
-
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -20,14 +19,17 @@ public class DashboardPage {
     }
 
     public int getCardBalance(String cardNumber) {
+        return extractBalance(findCardByLastDigits(cardNumber).text());
+    }
+
+    public TransferPage selectCardToReplenish(String cardNumber) {
+        findCardByLastDigits(cardNumber).$("button").click();
+        return new TransferPage();
+    }
+
+    private SelenideElement findCardByLastDigits(String cardNumber) {
         String lastDigits = cardNumber.substring(cardNumber.length() - 4);
-        for (SelenideElement card : cards) {
-            String text = card.text();
-            if (text.contains(lastDigits)) {
-                return extractBalance(text);
-            }
-        }
-        throw new IllegalStateException("Карта не найдена: " + cardNumber);
+        return cards.findBy(Condition.text(lastDigits));
     }
 
     private int extractBalance(String text) {
@@ -36,17 +38,4 @@ public class DashboardPage {
         String value = text.substring(start + balanceStart.length(), finish);
         return Integer.parseInt(value.replaceAll("\\s", ""));
     }
-
-    public TransferPage selectCardToReplenish(String cardNumber) {
-        String lastDigits = cardNumber.substring(cardNumber.length() - 4);
-        for (SelenideElement card : cards) {
-            if (card.text().contains(lastDigits)) {
-                card.$("button").click();
-                return new TransferPage();
-            }
-        }
-        throw new IllegalStateException("Карта не найдена: " + cardNumber);
-    }
-
-
 }
