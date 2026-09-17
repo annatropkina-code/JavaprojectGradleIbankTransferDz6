@@ -17,16 +17,12 @@ public class TransferPage {
     }
 
     public DashboardPage makeTransfer(String sum, String fromCard) {
-        amount.setValue(sum);
-        from.setValue(fromCard);
-        button.click();
+        fillAndSubmit(sum, fromCard);
         return new DashboardPage();
     }
 
     public TransferPage makeTransferWithError(String sum, String fromCard) {
-        amount.setValue(sum);
-        from.setValue(fromCard);
-        button.click();
+        fillAndSubmit(sum, fromCard);
         return this;
     }
 
@@ -35,5 +31,11 @@ public class TransferPage {
                 .shouldBe(Condition.visible)
                 .shouldHave(Condition.text(expectedText));
         return this;
+    }
+
+    private void fillAndSubmit(String sum, String fromCard) {
+        amount.setValue(sum);
+        from.setValue(fromCard);
+        button.click();
     }
 }
